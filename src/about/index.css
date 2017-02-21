@@ -1,0 +1,7 @@
+p {
+  font-size: 10em;
+  text-decoration: underline;
+  display: flex;
+  transform: translateY(-50%);
+  color: #eee;
+}
