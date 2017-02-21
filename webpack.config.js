@@ -51,20 +51,20 @@ module.exports = {
 			},
 			{
 				test: /\.pug$/,
-				use: ExtractTextPlugin.extract({
-					fallback: 'style-loader',
-					use: [
-						'html-loader',
-						'pug-loader'
-					]
-				})
+				use: ExtractTextPlugin.extract([
+					'html-loader',
+					'pug-loader',
+				])
 			},
 			{
 				test: /\.css$/,
-				use: ExtractTextPlugin.extract([
-					'css-loader',
-					'postcss-loader'
-				])
+				use: ExtractTextPlugin.extract({
+					fallback: 'style-loader',
+					use: [
+						'css-loader',
+						'postcss-loader'
+					]
+				})
 			},
 			{
 				test: /\.js$/,
