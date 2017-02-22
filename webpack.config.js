@@ -6,6 +6,22 @@ var StyleLintPlugin = require('stylelint-webpack-plugin')
 var WebpackMd5Hash = require('webpack-md5-hash')
 var ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin')
+const { getVendorsFromEntries, getExcludedChunkName } = require('./webpackUtils');
+
+const entries =  {
+	top: './src/top/index.js',
+	about: './src/about/index.js',
+};
+
+const entryVendorChunks = getVendorsFromEntries(entries);
+// return something like this:
+// new webpack.optimize.CommonsChunkPlugin({
+//   name: 'vendor.top',
+//   chunks: ['top'],
+//   minChunks: ({ resource }) => {
+//   	return /node_modules/.test(resource);
+//   },
+// }),
 
 module.exports = {
 
@@ -19,10 +35,7 @@ module.exports = {
 		chunkModules: true
 	},
 
-	entry: {
-		top: './src/top/index.js',
-		about: './src/about/index.js',
-	},
+	entry: entries,
 
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -79,7 +92,7 @@ module.exports = {
 		]
 	},
 
-	plugins: [
+	plugins: entryVendorChunks.concat([
 
 		new webpack.optimize.OccurrenceOrderPlugin(),
 
@@ -95,7 +108,7 @@ module.exports = {
 
 		// Top page
 		new HtmlWebpackPlugin({
-			excludeChunks: ['about'],
+			excludeChunks: getExcludedChunkName(['about']),
 			template: './src/top/index.pug',
 			filename: 'index.html',
 			chunksSortMode: 'dependency',
@@ -103,23 +116,18 @@ module.exports = {
 
 		// About page
 		new HtmlWebpackPlugin({
-			excludeChunks: ['top'],
+			excludeChunks: getExcludedChunkName(['top']),
 			template: './src/about/index.pug',
 			filename: 'about.html',
 			chunksSortMode: 'dependency',
 		}),
 
 		new webpack.optimize.CommonsChunkPlugin({
-		  name: 'vendor',
-		  minChunks: ({ resource }) => /node_modules/.test(resource),
-		}),
-
-		new webpack.optimize.CommonsChunkPlugin({
-			name: ['commons', 'vendor', 'bootstrap'],
+			name: ['commons', 'bootstrap'],
 		}),
 
 		// new webpack.optimize.UglifyJsPlugin(),
 
 		new WebpackMd5Hash(),
-	]
+	])
 }
