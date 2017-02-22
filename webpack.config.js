@@ -25,16 +25,17 @@ module.exports = {
 	},
 
 	output: {
-		path: path.resolve(__dirname, 'dist', 'assets'),
-		filename: '[name].[chunkhash].js',
-		chunkFilename: '[name].[chunkhash].js',
-		publicPath: '/assets/'
+		path: path.resolve(__dirname, 'dist'),
+		filename: 'assets/[name].[chunkhash].js',
+		chunkFilename: 'assets/[name].[chunkhash].js',
+		// publicPath: '/assets/'
 	},
 
 	devtool: 'source-map',
 
 	devServer: {
 		contentBase: 'dist',
+		inline: true,
 		port: 3000
 	},
 
@@ -51,10 +52,9 @@ module.exports = {
 			},
 			{
 				test: /\.pug$/,
-				use: ExtractTextPlugin.extract([
-					'html-loader',
+				use: [
 					'pug-loader',
-				])
+				]
 			},
 			{
 				test: /\.css$/,
@@ -96,16 +96,16 @@ module.exports = {
 		// Top page
 		new HtmlWebpackPlugin({
 			excludeChunks: ['about'],
-			template: '!!pug-loader!./src/top/index.pug',
-			filename: '../index.html',
+			template: './src/top/index.pug',
+			filename: 'index.html',
 			chunksSortMode: 'dependency',
 		}),
 
 		// About page
 		new HtmlWebpackPlugin({
 			excludeChunks: ['top'],
-			template: '!!pug-loader!./src/about/index.pug',
-			filename: '../about.html',
+			template: './src/about/index.pug',
+			filename: 'about.html',
 			chunksSortMode: 'dependency',
 		}),
 
